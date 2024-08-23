@@ -1,0 +1,42 @@
+version: '1.1'
+
+services:
+    app1:
+        build:
+            context: .
+            dockerfile: ./app1/Dockerfile
+        ports:
+            - "8000:80"
+        container_name: "app1"
+        env_file:
+            - ./app1/env/.env.local
+        volumes:
+            - ./app1/code:/code/app
+    postgres:
+        image: postgres:16.0
+        container_name: "postgres"
+        environment:
+            - TZ=Asia/Tokyo
+            - POSTGRES_USER=root
+            - POSTGRES_PASSWORD=password
+            - POSTGRES_DB=postgres
+        ports:
+            - "5432:5432"
+        volumes:
+            - fastapi_volume:/var/lib/postgresql/data
+    postgres_replica1:
+        image: postgres:16.0
+        container_name: "postgres_replica1"
+        environment:
+            - TZ=Asia/Tokyo
+            - POSTGRES_USER=root
+            - POSTGRES_PASSWORD=password
+            - POSTGRES_DB=postgres
+        ports:
+            - "5433:5432"
+        volumes:
+            - fastapi_replica1_volume:/var/lib/postgresql/data
+
+volumes:
+    fastapi_volume:
+    fastapi_replica1_volume:
