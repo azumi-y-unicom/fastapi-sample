@@ -1,3 +1,9 @@
+# FastAPIプロジェクトについて
+`./api1`と仮名で作成  
+* code ディレクトリ　ソースファイル
+* 
+
+
 # かんきょうについて
 * fastapi
 * SQLAlchemy、Alembic
@@ -28,7 +34,7 @@ pip install alembic
 python -m uvicorn app1.main:app --reload
 ```
 
-# Dockerで実行
+# Dockerで環境を起動
 ## コマンド
 イメージ作成
 ```
@@ -41,20 +47,15 @@ docker compose up
 ```
 
 ## 関連ファイル
-- ./dockers/fastapi/Dockerfile  
-　FastAPI実行環境用Dockerfile
-
-- ./dockers/postgres/Dockerfile  
-　FastAPI連携DB用実行環境用Dockerfile   
-　PostgreSQLの16.0をそのまま持ってきただけ。    
-　初期のスキーマ構築の処理をここに追記する。    
+- ./api1/Dockerfile  
+　api1プロジェクトの環境を校正するDockerfile
 
 - ./docker-compose.yml  
-　docker-composeのファイル
+　docker-composeのファイル  
 
 - ./requirements.txt  
-　開発環境構築時のrequirements.txt　Webサーバーの構築にも利用する。
-　```pip freeze > requirements.txt```で出力する
+　開発環境構築時のrequirements.txt　Webサーバーの構築にも利用する  
+　```pip freeze > requirements.txt```で出力する  
 
 # 参考資料
 - 環境構築  

@@ -15,6 +15,7 @@ services:
     postgres:
         image: postgres:16.0
         container_name: "postgres"
+        command: -c "hba_file=/etc/postgresql/pg_hba.conf"
         environment:
             - TZ=Asia/Tokyo
             - POSTGRES_USER=root
@@ -24,18 +25,23 @@ services:
             - "5432:5432"
         volumes:
             - fastapi_volume:/var/lib/postgresql/data
+            - ./postgres/primary/pg_hba.conf:/etc/postgresql/pg_hba.conf
+            - ./postgres/primary/init.sh:/docker-entrypoint-initdb.d/init.sh
+        healthcheck:
+            test: ["CMD", "pg_isready", "-U", "root", "-d", "postgres"]
+
     postgres_replica1:
         image: postgres:16.0
         container_name: "postgres_replica1"
-        environment:
-            - TZ=Asia/Tokyo
-            - POSTGRES_USER=root
-            - POSTGRES_PASSWORD=password
-            - POSTGRES_DB=postgres
-        ports:
-            - "5433:5432"
+        entrypoint: /etc/postgresql/entrypoint.sh
         volumes:
             - fastapi_replica1_volume:/var/lib/postgresql/data
+            - ./postgres/read_replica/entrypoint.sh:/etc/postgresql/entrypoint.sh
+        healthcheck:
+            test: ["CMD", "pg_isready", "-U", "root"]
+        depends_on:
+            postgres:
+                condition: service_healthy
 
 volumes:
     fastapi_volume:
