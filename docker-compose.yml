@@ -37,8 +37,10 @@ services:
         volumes:
             - fastapi_replica1_volume:/var/lib/postgresql/data
             - ./postgres/read_replica/entrypoint.sh:/etc/postgresql/entrypoint.sh
+        ports:
+            - "5433:5432"
         healthcheck:
-            test: ["CMD", "pg_isready", "-U", "root"]
+            test: ["CMD", "pg_isready", "-U", "root", "-d", "postgres"]
         depends_on:
             postgres:
                 condition: service_healthy
