@@ -8,15 +8,17 @@ import os
 
 PRIMARY_KEY_NAME = "primary"
 REPLICA_KEY_BASE = "replica_"
-PRIMARY_DB_HOST=postgres:5432
-PRIMARY_DB_DATABASE=postgres
-PRIMARY_DB_USER=root
-PRIMARY_DB_PASSWORD=secret
+PRIMARY_DB_HOST = "postgres:5432"
+PRIMARY_DB_DATABASE = "postgres"
+PRIMARY_DB_USER = "root"
+PRIMARY_DB_PASSWORD = "secret"
 
-## レプリカエンドポイント
-REPLICA_DB_HOST_1=postgres_replica1:5432
-REPLICA_DB_DATABASE_1=postgres
+# レプリカエンドポイント
+REPLICA_DB_HOST_1 = "postgres_replica1:5432"
+REPLICA_DB_DATABASE_1 = "postgres"
 
+DB_PRIMARY = "primary"
+DB_READREPLICA = "replica"
 
 
 # カスタマイズSession
@@ -27,7 +29,7 @@ class DatabaseSession(Session):
         engine = None
         if self._name:
             engine = engines[self._name]
-        elif self._flushing:
+        elif self._flushing and self._transaction:
             engine = engines[PRIMARY_KEY_NAME]
         else:
             engine = engines[random.choice(replica_keys)]
@@ -40,8 +42,10 @@ class DatabaseSession(Session):
 
         return session
 
+
 DB_USER = os.getenv('DB_USER')
 PASSWORD = os.getenv('PASSWORD')
+
 
 def primary_database_url():
     HOST = os.getenv('PRIMARY_DB_HOST')
@@ -65,10 +69,10 @@ engines = {
 
 replica_keys = []
 
-SessionLocal = scoped_session(sessionmaker(
+SessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False,
     class_=DatabaseSession
-))
+)
 
 Base = declarative_base()
