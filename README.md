@@ -1,7 +1,7 @@
 # FastAPIプロジェクトについて
 `./api1`と仮名で作成  
-* code ディレクトリ　ソースファイル
-* 
+* `./api1/code`ディレクトリ　ソースファイル
+* `./api1/env`ディレクトリ　 環境変数
 
 
 # かんきょうについて
@@ -32,6 +32,15 @@ pip install alembic
 ## uvicornを利用
 ```
 python -m uvicorn app1.main:app --reload
+```
+
+# マイグレーション
+* `alembic`を使用  
+* alembicの利用場所は`./api1/code/models`配下
+
+初回
+```
+alembic init migrations
 ```
 
 # Dockerで環境を起動

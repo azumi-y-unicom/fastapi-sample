@@ -9,3 +9,11 @@ class Sample1(Base):
     name = Column("name", String, nullable=False)
     description = Column("description", String)
     flag = Column("flag", SmallInteger, nullable=False)
+
+    def __repr__(self):
+        return "<User('id={}', 'name={}', description={}, flag={})>".format(
+            self.id,
+            self.name,
+            self.description,
+            self.flag
+        )

@@ -32,7 +32,8 @@ class DatabaseSession(Session):
         elif self._flushing and self._transaction:
             engine = engines[PRIMARY_KEY_NAME]
         else:
-            engine = engines[random.choice(replica_keys)]
+            # engine = engines[random.choice(replica_keys)]
+            engine = engines[PRIMARY_KEY_NAME]
         return engine
 
     def using_bind(self, name: str):
