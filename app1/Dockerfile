@@ -11,7 +11,9 @@ COPY ./app1/code /code/app
 COPY ./requirements.txt /code/requirements.txt
 
 # Pythonモジュール導入
-RUN pip install --upgrade pip && \
+RUN apt-get update && \
+    apt-get install -y libpq-dev gcc && \
+    pip install --upgrade pip && \
     pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
 # uvicorn起動コマンド　FastAPI実行のため

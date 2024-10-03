@@ -11,14 +11,11 @@ REPLICA_KEY_BASE = "replica_"
 PRIMARY_DB_HOST = "postgres:5432"
 PRIMARY_DB_DATABASE = "postgres"
 PRIMARY_DB_USER = "root"
-PRIMARY_DB_PASSWORD = "secret"
+PRIMARY_DB_PASSWORD = "password"
 
 # レプリカエンドポイント
-REPLICA_DB_HOST_1 = "postgres_replica1:5432"
+REPLICA_DB_HOST_1 = "postgres:5433"
 REPLICA_DB_DATABASE_1 = "postgres"
-
-DB_PRIMARY = "primary"
-DB_READREPLICA = "replica"
 
 
 # カスタマイズSession
@@ -51,21 +48,21 @@ PASSWORD = os.getenv('PASSWORD')
 def primary_database_url():
     HOST = os.getenv('PRIMARY_DB_HOST')
     DATABASE = os.getenv('PRIMARY_DB_DATABASE')
-    return f"postgresql://{DB_USER}:{PASSWORD}@{HOST}/{DATABASE}"
+    return f"postgresql+psycopg2://{DB_USER}:{PASSWORD}@{HOST}/{DATABASE}"
 
 
 def replica_database_url():
     HOST = os.getenv('REPLICA_DB_HOST_1')
     DATABASE = os.getenv('REPLICA_DB_DATABASE_1')
-    return f"postgresql://{DB_USER}:{PASSWORD}@{HOST}/{DATABASE}"
+    return f"postgresql+psycopg2://{DB_USER}:{PASSWORD}@{HOST}/{DATABASE}"
 
 
 SQLALCHEMY_DATABASE_URL = primary_database_url()
+print(SQLALCHEMY_DATABASE_URL)
 engines = {
     PRIMARY_KEY_NAME: create_engine(
-        SQLALCHEMY_DATABASE_URL,
-        connect_args={"check_same_thread": False}
-    ),
+        SQLALCHEMY_DATABASE_URL
+    )
 }
 
 replica_keys = []
@@ -73,7 +70,15 @@ replica_keys = []
 SessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False,
-    class_=DatabaseSession
+    bind=engines[PRIMARY_KEY_NAME]
 )
 
-Base = declarative_base()
+Base = declarative_base() 
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

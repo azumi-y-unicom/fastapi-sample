@@ -1,5 +1,5 @@
 from sqlalchemy import Column, BigInteger, SmallInteger, String
-from app1.code.models.database import Base
+from models.database import Base
 
 
 class Sample1(Base):
